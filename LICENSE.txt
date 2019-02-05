@@ -1,1 +1,78 @@
-11111
+git status #查看存储状态
+git diff #查看修改前后的不同
+git log #查看修改日志
+git add FileName #将追踪的文件放到stage区
+git commit -m "comment" #将stage区的文件提交到分支
+git reset --hard HEAD^ #返回上一个版本
+git reset --hard HEAD^^ #返回上上一个版本
+git reset --hard HEAD~100 #返回前100个版本
+git reset --hard commit_id #可以返回任意一个commit_id的历史版本，可以寻找到reset后的
+git reflog #查看运行的每一条指令，可以用来撤回reset，找寻commit_id
+cat FileName #查看FileName里的内容
+git diff HEAD -- FileName #查看工作区和版本库里最新版本的区别
+git checkout -- FileName #撤销FileName文件在工作区的修改全部撤销，这里有两种情况
+#情况1，自修改后还没有被放到暂存区，即没有git add FileName，撤销后即回到和版本库一样的咋U你给他
+#情况2，已经添加到暂存区后，又做了修改，现在，撤销修改就回到添加到暂存区后的状态
+#总之，就是让这个文件回到最近一次git commit 或 git add 时的状态
+git reset HEAD FileName #可以把暂存区的文件FileName撤销掉，重新放回工作区
+
+#情况：在修改了工作区的FileName，并且将它放到了暂存区stage区内，如何撤销暂存区的修改，并且又撤销工作区的修改
+#使用两个命令：
+#git reset HEAD FileName #可以把暂存区的文件FileName撤销掉，重新放回工作区
+#git checkout -- FileName #撤销FileName文件在工作区的修改全部撤销
+
+#情况：改错了东西，并且从暂存区提交到了版本库，可以使用版本退回。前提是没有推送到远程库
+
+#情况：当删除了文件时，可以用版本库的版本恢复工作区已经删除的文件
+rm FileName #删除FileName文件
+
+git rm FileName #删除版本库里的FileName文件，并且 git commit -m "remove test.txt"
+
+#情况：将本地库的内容推送的Github库中
+#将本地库与Github库关联，远程库的名字是origin，这是Git的默认叫法
+git remote add origin git@github.com:Username/learngit.git #Username是Github上的用户名
+#将本地库中的所有内容推送到远程库上
+git push -u origin master #将当前的分支master推送到远程库origin上
+#由于远程库是空的，第一次推送master分支时，加上了-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令。
+#从现在起，只要本地做了提交，就可以通过命令$ git push origin master进行推送
+git push origin master
+
+#从远程库中克隆项目到本地库
+git clone git@github.com:Username/repo.git #Username是Github上的用户名,repo是你在Github上建的项目
+
+
+#创建与合并分支
+
+#情况：Github库内保存的是主分支master，这是一项多人合作的项目。你拷贝了一份，并负责其中的一项开发
+#这项开发要一周才能完成，每天写好的代码不能提交到Github上，要到一周后项目完成才能提交
+#这时你需要保存每天的代码进度，又不能保存到master上，这时你需要创建分支，并且项目完成后，你需要合并分支
+#实质：原来的主分支只有一个master，HEAD总是指向master。master是指向提交的分支。HEAD现在是指向当前的分支。
+#现在创建一个新分支dev，并且将HEAD指向dev。从现在开始，对工作区的修改和提交就是针对dev分支了，新提交一次后，dev指针往前移动异步，而master指针不变
+#假如在分支dev上的工作完成了，将dev合并到master上，即将master指向dev的当前提交，就完成了合并。
+#合并完分支后，可以删除dev分支仍剩下一条主分支master
+
+#创建BranchName分支，然后切换到BranchName分支
+git checkout -b BranchName 
+#等价于
+git branch BranchName #创建BranchName分支
+git checkout BranchName #切换到BranchName分支,切换到master主分支也是这个命令
+
+#查看当前分支，当前分支前有“*”
+git branch 
+
+#把BranchName分支的工作成果合并到master分支上
+git merge BranchName
+
+#合并完BranchName分支后，可以删除BranchName分支
+git branch -d BranchName
+
+#分支版本合并时发生冲突
+
+
+#当BranchName版本与master版本在合并时发生冲突，git会自动修改FileName的文件内容
+#这时，可以打开文本编辑器查看不同，也可以使用
+cat FileName #查看文件内容
+
+#查看分支合并情况图
+git log --graph --pretty=oneline --abbrev-commit #可以由下至上显示分支合并情况图
+
